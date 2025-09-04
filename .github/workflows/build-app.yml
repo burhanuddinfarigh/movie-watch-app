@@ -1,0 +1,70 @@
+# This is the "recipe" file for GitHub Actions.
+# It tells GitHub how to build your Electron app for Windows and macOS.
+
+name: Build Movie Watch Together App
+
+# This is the trigger: Run this recipe whenever you push code to the "main" branch.
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # This is the first job: Build the Windows version.
+  build-windows:
+    # Tell GitHub to use a fresh, new Windows virtual machine.
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Get a copy of your code onto the virtual machine.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js on the machine.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a stable version of Node.js
+
+      # Step 3: Run the same commands you ran on your computer.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the Windows installer
+        run: npm run build:win
+
+      # Step 4: Save the finished .exe file so you can download it.
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: movie-watch-together-windows
+          path: dist/*.exe
+
+  # This is the second job: Build the macOS version. It runs at the same time as the Windows one!
+  build-macos:
+    # Tell GitHub to use a fresh, new macOS virtual machine.
+    runs-on: macos-latest
+
+    steps:
+      # Step 1: Get a copy of your code.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Run the install and build commands.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the macOS installer
+        run: npm run build:mac
+
+      # Step 4: Save the finished .dmg file.
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: movie-watch-together-macos
+          path: dist/*.dmg
