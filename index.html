@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Watch Together</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Initial Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
+            <div class="logo">
+                <h1>🍿 Movie Watch Together</h1>
+                <p>Watch movies together with crystal clear audio and video</p>
+            </div>
+            
+            <div class="options">
+                <button id="createRoomBtn" class="primary-btn">
+                    <span class="icon">🎬</span>
+                    Create Room
+                    <small>Share your screen and audio</small>
+                </button>
+                
+                <button id="joinRoomBtn" class="primary-btn">
+                    <span class="icon">👥</span>
+                    Join Room
+                    <small>Watch with a friend</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Create Room Screen -->
+        <div id="createRoomScreen" class="screen">
+            <div class="header">
+                <button id="backFromCreate" class="back-btn">← Back</button>
+                <h2>Create Room</h2>
+            </div>
+            
+            <div class="room-setup">
+                <div class="room-id-display">
+                    <label>Share this Room ID with your friend:</label>
+                    <div class="room-id-container">
+                        <input type="text" id="generatedRoomId" readonly>
+                        <button id="copyRoomId" class="copy-btn">Copy</button>
+                    </div>
+                </div>
+                
+                <div class="status-message" id="hostStatus">
+                    Waiting for friend to join...
+                </div>
+                
+                <div class="controls" id="hostControls" style="display: none;">
+                    <button id="selectScreenBtn" class="action-btn">Select Screen to Share</button>
+                    <button id="startSharingBtn" class="action-btn" disabled>Start Sharing</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Room Screen -->
+        <div id="joinRoomScreen" class="screen">
+            <div class="header">
+                <button id="backFromJoin" class="back-btn">← Back</button>
+                <h2>Join Room</h2>
+            </div>
+            
+            <div class="room-join">
+                <div class="input-group">
+                    <label for="roomIdInput">Enter Room ID:</label>
+                    <input type="text" id="roomIdInput" placeholder="Enter room ID here">
+                </div>
+                
+                <button id="connectBtn" class="action-btn">Connect</button>
+                
+                <div class="status-message" id="joinStatus"></div>
+            </div>
+        </div>
+
+        <!-- Screen Selection Modal -->
+        <div id="screenSelectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Select Screen or Window to Share</h3>
+                    <button id="closeScreenSelect" class="close-btn">×</button>
+                </div>
+                <div class="screen-sources" id="screenSources">
+                    <!-- Screen sources will be populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmScreenSelect" class="action-btn" disabled>Share Selected</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Streaming View -->
+        <div id="streamingScreen" class="screen">
+            <div class="streaming-header">
+                <div class="connection-info">
+                    <span class="status-indicator connected"></span>
+                    <span id="connectionStatus">Connected</span>
+                </div>
+                <div class="controls">
+                    <button id="toggleMute" class="control-btn">🎤</button>
+                    <button id="toggleVideo" class="control-btn">📹</button>
+                    <button id="endCall" class="control-btn end-call">📞</button>
+                </div>
+            </div>
+            
+            <div class="video-container">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <video id="localVideo" autoplay playsinline muted class="pip-video"></video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

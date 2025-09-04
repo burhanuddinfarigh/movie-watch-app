@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picture in Picture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .pip-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .pip-controls {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .pip-container:hover .pip-controls {
+            opacity: 1;
+        }
+        
+        .pip-control-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pip-control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .no-video {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pip-container">
+        <video id="pipVideo" autoplay playsinline muted></video>
+        <div class="pip-controls">
+            <button class="pip-control-btn" id="closePip" title="Close">×</button>
+        </div>
+        <div id="noVideoMessage" class="no-video" style="display: none;">
+            No video stream
+        </div>
+    </div>
+
+    <script>
+        const pipVideo = document.getElementById('pipVideo');
+        const closePip = document.getElementById('closePip');
+        const noVideoMessage = document.getElementById('noVideoMessage');
+
+        // Handle stream updates from main window
+        if (window.electronAPI) {
+            window.electronAPI.onUpdateStream((event, streamData) => {
+                if (streamData && streamData.stream) {
+                    pipVideo.srcObject = streamData.stream;
+                    pipVideo.style.display = 'block';
+                    noVideoMessage.style.display = 'none';
+                } else {
+                    pipVideo.style.display = 'none';
+                    noVideoMessage.style.display = 'flex';
+                }
+            });
+        }
+
+        // Close PiP window
+        closePip.addEventListener('click', () => {
+            if (window.electronAPI) {
+                window.electronAPI.closePiPWindow();
+            }
+        });
+
+        // Make the window draggable
+        document.addEventListener('mousedown', (e) => {
+            if (e.target === document.body || e.target.classList.contains('pip-container')) {
+                const { ipcRenderer } = require('electron');
+                ipcRenderer.send('start-dragging');
+            }
+        });
+    </script>
+</body>
+</html>
