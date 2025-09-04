@@ -1,3 +1,4 @@
+console.log('PRELOAD DEBUG: The preload.js script has loaded successfully.'); // <-- ADD THIS LINE
 const { contextBridge, ipcRenderer } = require('electron');
 
 // Expose protected methods that allow the renderer process to use
