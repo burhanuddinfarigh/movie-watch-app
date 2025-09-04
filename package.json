@@ -76,7 +76,6 @@
     "dmg": {
       "title": "Movie Watch Together",
       "icon": "build/icon.icns",
-      "background": "build/dmg-background.png",
       "contents": [
         {
           "x": 130,
@@ -125,4 +124,5 @@
       "category": "Network"
     }
   }
+
 }
